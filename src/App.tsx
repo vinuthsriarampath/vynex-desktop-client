@@ -1,9 +1,10 @@
 function App() {
   const notify = () => {
-    new Notification("Hello World", {
-      body: "This is a notification",
-      icon: "https://via.placeholder.com/150",
-    });
+    // const NOTIFICATION_TITLE = 'Title'
+    // const NOTIFICATION_BODY = 'Notification from the Renderer process. Click to log to console.'
+    // const CLICK_MESSAGE = 'Notification clicked!'
+
+    window.ipcRenderer.send('notify', 'Title', 'Notification from the Renderer process. Click to log to console.')  
   }
 
   return (
