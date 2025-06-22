@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -33,7 +33,7 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Build app
+      - name: Build Windows app
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run build
