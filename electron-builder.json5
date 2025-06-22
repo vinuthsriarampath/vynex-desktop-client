@@ -1,9 +1,10 @@
 // @see - https://www.electron.build/configuration/configuration
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "VinuVynexCrm",
+  "appId": "com.vinu.vynex",
   "asar": true,
   "productName": "VyNex",
+  "copyright": "Copyright © 2025 Vinuth Sri Arampath",	
   "directories": {
     "output": "release/${version}"
   },
@@ -33,8 +34,12 @@
     "oneClick": false,
     "perMachine": false,
     "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "runAfterFinish": false,
+    "createStartMenuShortcut": true,
     "deleteAppDataOnUninstall": false,
     "installerIcon": "public/icon.ico",
+    "uninstallerIcon": "public/icon.ico",
     "installerHeaderIcon": "public/icon.ico"
   },
   "linux": {
