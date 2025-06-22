@@ -38,12 +38,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run build
 
+      - name: Debug build output
+        run: ls -R release
+
       - name: Create GitHub Release
-        id: create_release
         uses: actions/create-release@v1
         with:
           tag_name: ${{ env.VERSION }}
-          release_name: Release v${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
           draft: false
           prerelease: false
         env:
@@ -52,12 +54,12 @@ jobs:
       - name: Upload release assets
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.VERSION }} 
+          tag_name: ${{ env.VERSION }}
           files: |
             release/${{ env.VERSION }}/builder-debug.yml
             release/${{ env.VERSION }}/builder-effective-config.yaml
             release/${{ env.VERSION }}/latest.yml
-            release/${{ env.VERSION }}/VyNex-Windows-${{ env.VERSION }}-Setup.exe
-            release/${{ env.VERSION }}/VyNex-Windows-${{ env.VERSION }}-Setup.exe.blockmap
+            release/${{ env.VERSION }}/VyNex-Windows-*-Setup.exe
+            release/${{ env.VERSION }}/VyNex-Windows-*-Setup.exe.blockmap
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
