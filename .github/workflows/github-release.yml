@@ -52,6 +52,7 @@ jobs:
       - name: Upload release assets
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: v${{ env.VERSION }} 
           files: |
             release/${{ env.VERSION }}/builder-debug.yml
             release/${{ env.VERSION }}/builder-effective-config.yaml
