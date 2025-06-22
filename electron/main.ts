@@ -2,19 +2,10 @@ import { app, BrowserWindow, ipcMain, Notification, screen } from 'electron'
 // import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+import { autoUpdater, } from 'electron-updater'
 
-// const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// The built directory structure
-//
-// ├─┬─┬ dist
-// │ │ └── index.html
-// │ │
-// │ ├─┬ dist-electron
-// │ │ ├── main.js
-// │ │ └── preload.mjs
-// │
 process.env.APP_ROOT = path.join(__dirname, '..')
 
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
@@ -26,9 +17,12 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 
 let win: BrowserWindow | null
 
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = true;
+
 function createWindow() {
 
-  app.applicationMenu = null
+  // app.applicationMenu = null
 
   win = new BrowserWindow({
     icon: 'public/icon.ico',
@@ -65,7 +59,20 @@ if(!gotTheLock){
     }
   })
 
-  app.whenReady().then(createWindow)
+  app.whenReady().then(() => {
+    createWindow();
+  
+    win?.webContents.on('did-finish-load', () => {
+      sendMessage("Checking For Updates...");
+  
+      let upt=autoUpdater.checkForUpdates().catch(err => {
+        console.error("Update check failed:", err.message);
+        sendMessage("Update check failed: " + err.message);
+      });
+      console.log(upt);
+    });
+  });
+  
 
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -76,8 +83,6 @@ if(!gotTheLock){
   
 }
 
-
-
 ipcMain.on('notify', (_event, title, body) => {
   new Notification({
     title,
@@ -85,3 +90,36 @@ ipcMain.on('notify', (_event, title, body) => {
     
   }).show()
 })
+
+autoUpdater.on("update-available", () => {
+  console.log("Update available");
+  sendMessage("Update available. Downloading...");
+  autoUpdater.downloadUpdate().catch(err => {
+    console.error("Update download failed:", err.message);
+    sendMessage("Update download failed: " + err.message);
+  });
+});
+
+autoUpdater.on("update-not-available", () => {
+  console.log("Update not available");
+  sendMessage("No updates available. Current Version : v" + app.getVersion());
+});
+
+autoUpdater.on("update-downloaded", () => {
+  console.log("Update downloaded");
+  sendMessage("Update downloaded. Restart the Application !");
+});
+
+autoUpdater.on("error", (err) => {
+  console.log("Error: " + err.message);
+  sendMessage("Error: " + err.message);
+});
+
+function sendMessage(message:string){
+  win?.webContents.send('update-message', message);
+}
+
+
+process.on("uncaughtException",function (err){
+  console.log(err);
+});
