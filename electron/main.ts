@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain, Notification, screen } from 'electron'
 // import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -27,8 +27,13 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 let win: BrowserWindow | null
 
 function createWindow() {
+
+  app.applicationMenu = null
+
   win = new BrowserWindow({
     icon: 'public/icon.ico',
+    width: screen.getPrimaryDisplay().workAreaSize.width,
+    height: screen.getPrimaryDisplay().workAreaSize.height,
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },
@@ -47,23 +52,36 @@ function createWindow() {
   }
 }
 
+const gotTheLock = app.requestSingleInstanceLock()
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-    win = null
-  }
+if(!gotTheLock){
+  app.quit()
+}else{
+
+  app.on('second-instance', () => {
+    if (win) {
+      if (win.isMinimized()) win.restore()
+      win.focus()
+    }
+  })
+
+  app.whenReady().then(createWindow)
+
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
+      win = null
+    }
+  })
+  
+}
+
+
+
+ipcMain.on('notify', (_event, title, body) => {
+  new Notification({
+    title,
+    body,
+    
+  }).show()
 })
-
-app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
-})
-
-app.whenReady().then(createWindow)
