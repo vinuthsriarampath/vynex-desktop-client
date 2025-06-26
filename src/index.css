@@ -1,2 +1,10 @@
 @import "tailwindcss";
 
+body {
+    font-family: "Press Start 2P",'Roboto', sans-serif;
+    cursor: url('cursor.png');
+}
+
+.normal-text{
+    font-size: 10px;
+}
