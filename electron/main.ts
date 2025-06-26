@@ -63,13 +63,16 @@ if(!gotTheLock){
     createWindow();
   
     win?.webContents.on('did-finish-load', () => {
-      sendMessage("Checking For Updates...");
+    if (process.env.NODE_ENV !== 'development') {
+      sendMessage("Checking For Updates...",false);
   
       let upt=autoUpdater.checkForUpdates().catch(err => {
         console.error("Update check failed:", err.message);
-        sendMessage("Update check failed: " + err.message);
+        sendMessage("Update check failed: " + err.message,false);
       });
       console.log(upt);
+    }
+      
     });
   });
   
@@ -93,33 +96,37 @@ ipcMain.on('notify', (_event, title, body) => {
 
 autoUpdater.on("update-available", () => {
   console.log("Update available");
-  sendMessage("Update available. Downloading...");
+  sendMessage("Update available. Downloading...",false);
   autoUpdater.downloadUpdate().catch(err => {
     console.error("Update download failed:", err.message);
-    sendMessage("Update download failed: " + err.message);
+    sendMessage("Update download failed: " + err.message,false);
   });
 });
 
 autoUpdater.on("update-not-available", () => {
   console.log("Update not available");
-  sendMessage("No updates available. Current Version : v" + app.getVersion());
+  sendMessage("No updates available. Current Version : v" + app.getVersion(),true);
 });
 
 autoUpdater.on("update-downloaded", () => {
   console.log("Update downloaded");
-  sendMessage("Update downloaded. Restart the Application !");
+  sendMessage("Update downloaded. Restart the Application !",false);
 });
 
 autoUpdater.on("error", (err) => {
   console.log("Error: " + err.message);
-  sendMessage("Error: " + err.message);
+  sendMessage("Error: " + err.message,false);
 });
 
-function sendMessage(message:string){
+function sendMessage(message:string,status:boolean){
   win?.webContents.send('update-message', message);
+  updateStatus(status);
 }
 
+function updateStatus(status:boolean){
+  win?.webContents.send('update-status', status);
+}
 
 process.on("uncaughtException",function (err){
-  console.log(err);
+  sendMessage("Error: " + err.message,false);
 });
