@@ -2,5 +2,9 @@
 
 body {
     font-family: "Press Start 2P",'Roboto', sans-serif;
-    font-size: 400px;
+    cursor: url('cursor.png');
+}
+
+.normal-text{
+    font-size: 10px;
 }
