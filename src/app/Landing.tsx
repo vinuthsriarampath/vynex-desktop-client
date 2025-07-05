@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import AppUpdate from "../components/AppUpdate";
 import Login from "./auth/login/Login";
 import OfflinePage from "../components/OfflinePage";
+import { ThemeProvider } from "@/components/theme-provider"
+
 
 function Landing() {
     const isDesktop = Boolean(window.ipcRenderer);
@@ -45,23 +47,27 @@ function Landing() {
     }, [isDesktop]);
     return (
         <>
-            <div className="bg-black h-screen text-lime-400 flex justify-center items-center">
-                {
-                    isDev ? (
-                        <Login />
-                    ) : (
-                        isOnline ? (
-                            !updateStatus ? (
-                                <AppUpdate message={message} />
-                            ) : (
-                                <Login />
-                            )
+            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+
+                <div className=" h-screen flex justify-center items-center">
+
+                    {
+                        isDev ? (
+                            <Login />
                         ) : (
-                            <OfflinePage />
+                            isOnline ? (
+                                !updateStatus ? (
+                                    <AppUpdate message={message} />
+                                ) : (
+                                    <Login />
+                                )
+                            ) : (
+                                <OfflinePage />
+                            )
                         )
-                    )
-                }
-            </div>
+                    }
+                </div>
+            </ThemeProvider>
         </>
     )
 }
