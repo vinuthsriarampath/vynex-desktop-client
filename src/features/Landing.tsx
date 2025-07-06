@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import AppUpdate from "../components/AppUpdate";
+import AppUpdate from "../components/custom/AppUpdate";
 import Login from "./auth/login/Login";
-import OfflinePage from "../components/OfflinePage";
-import { ThemeProvider } from "@/components/theme-provider"
+import OfflinePage from "../pages/OfflinePage";
+import { ThemeProvider } from "@/components/common/theme-provider"
 
 
 function Landing() {
