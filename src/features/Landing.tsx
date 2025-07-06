@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import AppUpdate from "../components/custom/AppUpdate";
 import Login from "./auth/login/Login";
 import OfflinePage from "../pages/OfflinePage";
-import { ThemeProvider } from "@/components/common/theme-provider"
 
 
 function Landing() {
@@ -47,27 +46,24 @@ function Landing() {
     }, [isDesktop]);
     return (
         <>
-            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <div className=" h-screen flex justify-center items-center">
 
-                <div className=" h-screen flex justify-center items-center">
-
-                    {
-                        isDev ? (
-                            <Login />
-                        ) : (
-                            isOnline ? (
-                                !updateStatus ? (
-                                    <AppUpdate message={message} />
-                                ) : (
-                                    <Login />
-                                )
+                {
+                    isDev ? (
+                        <Login />
+                    ) : (
+                        isOnline ? (
+                            !updateStatus ? (
+                                <AppUpdate message={message} />
                             ) : (
-                                <OfflinePage />
+                                <Login />
                             )
+                        ) : (
+                            <OfflinePage />
                         )
-                    }
-                </div>
-            </ThemeProvider>
+                    )
+                }
+            </div>
         </>
     )
 }
