@@ -1,6 +1,8 @@
 import { ModeToggle } from "@/components/shared/mode-toggle";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { isAuthenticated } from "@/utils/auth";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
@@ -14,6 +16,7 @@ function Login() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loginError, setLoginError] = useState<string>("");
   const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -43,7 +46,6 @@ function Login() {
             },
           }
         );
-        console.log("Login successful:", response.data);
 
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -104,12 +106,16 @@ function Login() {
                     {errors.email}
                   </p>
                 )}
-              <Input type="password" name="password" placeholder="Password" />
+              <Input type={showPassword ? "text" : "password"} name="password" placeholder="Password" />
               {errors.password && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.password}
                   </p>
                 )}
+                <div className="flex flex-row gap-4 items-center text-sm">
+                  <Checkbox id="showPassword" className="" checked={showPassword} onCheckedChange={checked => setShowPassword(!!checked)} /> 
+                  <Label htmlFor="showPassword" >Show Password?</Label>
+                </div>
               <Button type="submit" className=" rounded-lg bg-lime-400  border-1 text-black text-sm cursor-pointer hover:bg-lime-700" >{isLoading ? "Loading..." : "Login"}</Button>
               <ModeToggle/>
             </form>
