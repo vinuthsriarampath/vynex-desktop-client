@@ -55,7 +55,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             asChild
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
-                            <a href="#">
+                            <a href="/#/app/">
                                 <img src="icon.ico" className="!size-5" />
                                 <span className="text-base font-semibold">Vynex</span>
                             </a>
@@ -68,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map((item) => (
-                                <SidebarMenuItem key={item.title}>
+                                <SidebarMenuItem key={item.title} className="cursor-pointer">
                                     <SidebarMenuButton asChild>
                                         <a href={item.url}>
                                             <item.icon />

@@ -43,10 +43,10 @@ export function NavUser({user}:Props) {
         <SidebarMenu>
             <SidebarMenuItem>
                 <DropdownMenu>
-                    <DropdownMenuTrigger className="w-full">
+                    <DropdownMenuTrigger className="w-full ">
                         <SidebarMenuButton
                             size="lg"
-                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
                                 <AvatarImage src={user.avatar} alt={user.first_name} />
@@ -79,7 +79,7 @@ export function NavUser({user}:Props) {
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                     
-                        <DropdownMenuItem onClick={handleLogout}>
+                        <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
                             <LogOut />
                             Log out
                         </DropdownMenuItem>
