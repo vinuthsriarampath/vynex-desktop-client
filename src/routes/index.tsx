@@ -1,6 +1,6 @@
 import ProtectedRoute from "@/components/common/protected-route";
 import Dashboard from "@/features/app/dashbord/dashboard";
-import Project from "@/features/app/project/project";
+import ProjectPage from "@/features/app/project/project";
 import Landing from "@/features/Landing";
 import MainLayout from "@/layouts/main-layout";
 import NotFound from "@/pages/not-found";
@@ -21,7 +21,7 @@ export default function AppRoutes() {
       ),
       children: [
         { index: true, element: <Dashboard/> },
-        { path: "project", element: <Project/> },
+        { path: "project", element: <ProjectPage/> },
       ],
     },
     {
