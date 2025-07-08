@@ -2,7 +2,8 @@
 
 interface ImportMetaEnv {
     readonly VITE_BASE_URL?: string;
-    // Add other custom environment variables here
+    readonly VITE_GITHUB_PAT?: string;
+    readonly VITE_GITHUB_BASE?: string;
   }
   
   interface ImportMeta {
