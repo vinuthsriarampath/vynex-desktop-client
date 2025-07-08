@@ -3,26 +3,22 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { isAuthenticated } from "@/utils/auth";
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import axios, { AxiosResponse } from "axios";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 
 function Login() {
 
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loginError, setLoginError] = useState<string>("");
-  const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
   const [showPassword, setShowPassword] = useState(false);
+  
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAuthenticated()) {
-      navigate("/app");
-    }
-  });
+  const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -51,18 +47,14 @@ function Login() {
         localStorage.setItem("user", JSON.stringify(response.data.user));
 
         navigate("/app");
+        toast.success("Successfully Logged In!!");
       } catch (error) {
-        const err = error as AxiosError;
-        console.error("Login error:", err.message, err.response?.data, err.response?.status);
-
-        if (err.response?.data && typeof err.response.data === "object" && "error" in err.response.data) {
-          setLoginError((err.response.data as { error: string }).error);
-        } else if (err.response?.status === 401) {
-          setLoginError("Invalid email or password");
-        } else if (err.response?.status === 400) {
-          setLoginError("Email and password are required");
+        if (axios.isAxiosError(error)) {
+          toast.error(error.response?.data.error);
+          setLoginError(error.response?.data.error);
         } else {
-          setLoginError("Login failed. Please try again.");
+          toast.error(error instanceof Error ? error.message : "Login Failed");
+          setLoginError(error instanceof Error ? error.message : "Login Failed");
         }
       } finally {
         setIsLoading(false);

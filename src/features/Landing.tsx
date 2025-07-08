@@ -6,9 +6,10 @@ import OfflinePage from "../pages/OfflinePage";
 
 function Landing() {
     const isDesktop = Boolean(window.ipcRenderer);
+    const isOnline = navigator.onLine;
+
     const [message, setMessage] = useState('');
     const [updateStatus, setUpdateStatus] = useState(false);
-    const isOnline = navigator.onLine;
     const [isDev, setIsDev] = useState(false);
 
     useEffect(() => {
@@ -28,7 +29,6 @@ function Landing() {
 
 
         const handler = (_event: any, msg: string) => {
-            console.log(msg);
             setMessage(msg)
         }
 
