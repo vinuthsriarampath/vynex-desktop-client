@@ -1,40 +1,84 @@
+import { projectColumns } from "@/components/app/project/project-columns";
+import { DataTable } from "@/components/common/data-table";
 import { Button } from "@/components/ui/button";
 import { Project } from "@/types/Project";
 import { Label } from "@radix-ui/react-dropdown-menu";
-import axios from "axios";
-import { useState } from "react";
+import axios, { AxiosResponse } from "axios";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function ProjectPage() {
-    const [projects,setProjects] = useState<Project[]>([])
+    const [projects, setProjects] = useState<Project[]>([]);
+
 
     const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
     const GITHUB_BASE_URL = import.meta.env.VITE_GITHUB_BASE_URL || " ";
     const GITHUB_PAT = import.meta.env.VITE_GITHUB_PAT || " ";
-    const TOKEN =  localStorage.getItem('token');
+    const TOKEN = localStorage.getItem('token') ? localStorage.getItem('token') : toast.error("Token is missing");
+
+    useEffect(() => {
+        fetchProjects();
+    }, [])
+
+    const fetchProjects = async () => {
+        try{
+            const response:AxiosResponse<Project[]> = await axios.get(
+            `${BASE_URL}/api/project/read/all`,
+            {
+                headers:{
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${TOKEN}`
+                }
+            }
+        )
+        setProjects(response.data);
+    }catch(error){
+        if(axios.isAxiosError(error)){
+            toast.error(error.response?.data.error);
+        }else{
+            toast.error(error instanceof Error?error.message:"Something went wrong!");
+        }
+    }
+    }
+
 
     async function handleSync() {
+        const toastId = toast.loading("Fetching repositories from GitHub...");
         try {
+
+
+
             let page = 1;
             let hasMore = true;
             let allRepos: any[] = [];
 
             while (hasMore) {
-                const response = await axios.get(
-                    `${GITHUB_BASE_URL}/user/repos?affiliation=owner&per_page=100&page=${page}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${GITHUB_PAT}`,
-                            Accept: "application/vnd.github+json",
-                        },
+                try {
+                    const response = await axios.get(
+                        `${GITHUB_BASE_URL}/user/repos?affiliation=owner&per_page=100&page=${page}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${GITHUB_PAT}`,
+                                Accept: "application/vnd.github+json",
+                            },
+                        }
+                    );
+    
+                    const repos = response.data;
+                    allRepos = allRepos.concat(repos);
+    
+                    hasMore = repos.length === 100;
+                    page++;
+                } catch (error) {
+                    if(axios.isAxiosError(error)){
+                        toast.error(error.response?.data.error,{id:toastId});
+                    }else{
+                        toast.error(error instanceof Error?error.message:"Something went wrong when fetching from github!",{id:toastId});
                     }
-                );
-
-                const repos = response.data;
-                allRepos = allRepos.concat(repos);
-
-                hasMore = repos.length === 100;
-                page++;
+                }
             }
+
+            toast.loading("Syncing to database!", { id: toastId });
 
             const mappedProjects: Project[] = allRepos.map((repo) => ({
                 repo_id: repo.id,
@@ -43,18 +87,21 @@ export default function ProjectPage() {
                 description: repo.description,
                 language: repo.language,
                 clone_url: repo.clone_url,
-                status: 'in-progress', 
+                status: 'in-progress',
                 createdAt: new Date(repo.created_at),
                 updatedAt: new Date(repo.updated_at),
                 project_name: repo.name,
             }));
 
-            setProjects(mappedProjects);
+            const newProjects = mappedProjects.filter((mappedProject) => 
+                !projects.some((existingProject) => existingProject.repo_id === mappedProject.repo_id)
+            );
+            
 
-            try{
+            try {
                 const response = await axios.post(
                     `${BASE_URL}/api/project/sync`,
-                    JSON.stringify(projects),
+                    JSON.stringify(newProjects),
                     {
                         headers: {
                             Authorization: `Bearer ${TOKEN}`,
@@ -62,21 +109,19 @@ export default function ProjectPage() {
                         },
                     }
                 );
-                
-                // Handle the new API response structure
-                if (response.data && response.data.newRepos) {
-                    console.log("Newly created projects:", response.data.newRepos);
-                } else if (response.data && response.data.error) {
-                    console.error("API Error:", response.data.error);
-                } else {
-                    console.log("Unexpected response:", response.data);
+
+                setProjects(prev => [...prev,...response.data.newRepos])
+                toast.success("Sync Successful !",{id:toastId} )
+            } catch (error) {
+                if(axios.isAxiosError(error)){
+                    toast.error(error.response?.data.error,{id:toastId});
+                }else{
+                    toast.error(error instanceof Error?error.message:"Something went wrong wen syncing!",{id:toastId});
                 }
-            }catch(error){
-                console.error("vynex server error ", error);
             }
-            
+
         } catch (error) {
-            console.error(error);
+            toast.error("Something went wrong!",{id:toastId});
         }
     }
 
@@ -88,6 +133,7 @@ export default function ProjectPage() {
                     Sync Github
                 </Button>
             </div>
+            <DataTable columns={projectColumns} data={projects} />
         </div>
     );
 }
