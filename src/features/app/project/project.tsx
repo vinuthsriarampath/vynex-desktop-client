@@ -1,6 +1,8 @@
+import CreateProject from "@/components/app/project/create-project";
 import { projectColumns } from "@/components/app/project/project-columns";
 import { DataTable } from "@/components/common/data-table";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Project } from "@/types/Project";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import axios, { AxiosResponse } from "axios";
@@ -21,24 +23,24 @@ export default function ProjectPage() {
     }, [])
 
     const fetchProjects = async () => {
-        try{
-            const response:AxiosResponse<Project[]> = await axios.get(
-            `${BASE_URL}/api/project/read/all`,
-            {
-                headers:{
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${TOKEN}`
+        try {
+            const response: AxiosResponse<Project[]> = await axios.get(
+                `${BASE_URL}/api/project/read/all`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${TOKEN}`
+                    }
                 }
+            )
+            setProjects(response.data);
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error.response?.data.error);
+            } else {
+                toast.error(error instanceof Error ? error.message : "Something went wrong!");
             }
-        )
-        setProjects(response.data);
-    }catch(error){
-        if(axios.isAxiosError(error)){
-            toast.error(error.response?.data.error);
-        }else{
-            toast.error(error instanceof Error?error.message:"Something went wrong!");
         }
-    }
     }
 
 
@@ -63,17 +65,17 @@ export default function ProjectPage() {
                             },
                         }
                     );
-    
+
                     const repos = response.data;
                     allRepos = allRepos.concat(repos);
-    
+
                     hasMore = repos.length === 100;
                     page++;
                 } catch (error) {
-                    if(axios.isAxiosError(error)){
-                        toast.error(error.response?.data.error,{id:toastId});
-                    }else{
-                        toast.error(error instanceof Error?error.message:"Something went wrong when fetching from github!",{id:toastId});
+                    if (axios.isAxiosError(error)) {
+                        toast.error(error.response?.data.error, { id: toastId });
+                    } else {
+                        toast.error(error instanceof Error ? error.message : "Something went wrong when fetching from github!", { id: toastId });
                     }
                 }
             }
@@ -93,10 +95,10 @@ export default function ProjectPage() {
                 project_name: repo.name,
             }));
 
-            const newProjects = mappedProjects.filter((mappedProject) => 
+            const newProjects = mappedProjects.filter((mappedProject) =>
                 !projects.some((existingProject) => existingProject.repo_id === mappedProject.repo_id)
             );
-            
+
 
             try {
                 const response = await axios.post(
@@ -110,18 +112,18 @@ export default function ProjectPage() {
                     }
                 );
 
-                setProjects(prev => [...prev,...response.data.newRepos])
-                toast.success("Sync Successful !",{id:toastId} )
+                setProjects(prev => [...prev, ...response.data.newRepos])
+                toast.success("Sync Successful !", { id: toastId })
             } catch (error) {
-                if(axios.isAxiosError(error)){
-                    toast.error(error.response?.data.error,{id:toastId});
-                }else{
-                    toast.error(error instanceof Error?error.message:"Something went wrong wen syncing!",{id:toastId});
+                if (axios.isAxiosError(error)) {
+                    toast.error(error.response?.data.error, { id: toastId });
+                } else {
+                    toast.error(error instanceof Error ? error.message : "Something went wrong wen syncing!", { id: toastId });
                 }
             }
 
         } catch (error) {
-            toast.error("Something went wrong!",{id:toastId});
+            toast.error("Something went wrong!", { id: toastId });
         }
     }
 
@@ -129,9 +131,31 @@ export default function ProjectPage() {
         <div className="p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
                 <Label className="text-xl sm:text-2xl font-bold">Project Management</Label>
-                <Button className="w-full sm:w-auto cursor-pointer" onClick={handleSync}>
-                    Sync Github
-                </Button>
+                <div className="flex sm:flex-row flex-col w-full sm:w-auto gap-4">
+                    {/* <Button variant={"outline"} className="w-full sm:w-auto cursor-pointer">
+                        New Project
+                    </Button> */}
+                    <Tooltip>
+                    <TooltipTrigger>
+    <CreateProject setProjects={setProjects} />
+                        
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white ">
+                        Create a project from here and this will create a github repository 
+                    </TooltipContent>
+                </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Button className="w-full sm:w-auto cursor-pointer" onClick={handleSync}>
+                                Sync Github
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-white ">
+                            Sync all the repositories in github to the application
+                        </TooltipContent>
+                    </Tooltip>
+
+                </div>
             </div>
             <DataTable columns={projectColumns} data={projects} />
         </div>
