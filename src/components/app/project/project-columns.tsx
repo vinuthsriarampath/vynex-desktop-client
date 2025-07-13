@@ -18,6 +18,7 @@ import { Project } from "@/types/Project"
 import { toast } from "sonner"
 
 
+
 export const projectColumns: ColumnDef<Project>[] = [
     {
         id: "select",
@@ -183,7 +184,10 @@ export const projectColumns: ColumnDef<Project>[] = [
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             onClick={() => {
-                                window.open(project.html_url, '_blank');
+                                if(Boolean(window.ipcRenderer)){
+                                    window.ipcRenderer.send('open-link', project.html_url);
+                                }
+                                window.open(project.html_url);
                             }}
                         >
                             View on github
