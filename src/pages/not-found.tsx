@@ -6,7 +6,7 @@ function NotFound(){
             <div className="flex flex-col justify-content items-center gap-4 animate-pulse">
                 <img src="logo-v2.png" alt="Login page icon" className="h-24 w-24 animate-bounce" />
                 <p className="text-sm">Page Not Found !!</p>
-                <a href="/"><Button>Go Back</Button></a>
+                <a href="/#/app"><Button>Go Back</Button></a>
             </div>
         </div>
     )
