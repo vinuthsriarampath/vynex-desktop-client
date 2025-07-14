@@ -2,9 +2,44 @@ import { AppSidebar } from "@/components/shared/app-sidebar";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 export default function MainLayout() {
+    const location = useLocation();
+
+    // Function to generate breadcrumb items based on current path
+    const generateBreadcrumbItems = () => {
+        const pathSegments = location.pathname.split('/').filter(segment => segment !== '');
+        const breadcrumbItems = [];
+
+        // Always show "App" as the root
+        breadcrumbItems.push({
+            label: "App",
+            href: "/#/app",
+            isCurrent: pathSegments.length === 1 && pathSegments[0] === "app"
+        });
+
+        // Add other segments
+        for (let i = 1; i < pathSegments.length; i++) {
+            const segment = pathSegments[i];
+            const isLast = i === pathSegments.length - 1;
+            
+            // Convert segment to readable label
+            const label = segment.charAt(0).toUpperCase() + segment.slice(1);
+            const href = `/#/${pathSegments.slice(0, i + 1).join('/')}`;
+            
+            breadcrumbItems.push({
+                label,
+                href,
+                isCurrent: isLast
+            });
+        }
+
+        return breadcrumbItems;
+    };
+
+    const breadcrumbItems = generateBreadcrumbItems();
+
     return (
         <div className="h-screen">
             <SidebarProvider style={
@@ -25,15 +60,22 @@ export default function MainLayout() {
                                 />
                                 <Breadcrumb>
                                     <BreadcrumbList>
-                                        <BreadcrumbItem className="hidden md:block">
-                                            <BreadcrumbLink href="#">
-                                                Building Your Application
-                                            </BreadcrumbLink>
-                                        </BreadcrumbItem>
-                                        <BreadcrumbSeparator className="hidden md:block" />
-                                        <BreadcrumbItem>
-                                            <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                                        </BreadcrumbItem>
+                                        {breadcrumbItems.map((item, index) => (
+                                            <div key={item.href} className="flex items-center">
+                                                <BreadcrumbItem className="hidden md:block">
+                                                    {item.isCurrent ? (
+                                                        <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                                                    ) : (
+                                                        <BreadcrumbLink href={item.href}>
+                                                            {item.label}
+                                                        </BreadcrumbLink>
+                                                    )}
+                                                </BreadcrumbItem>
+                                                {index < breadcrumbItems.length - 1 && (
+                                                    <BreadcrumbSeparator className="hidden md:block" />
+                                                )}
+                                            </div>
+                                        ))}
                                     </BreadcrumbList>
                                 </Breadcrumb>
                             </div>
