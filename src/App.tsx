@@ -2,14 +2,17 @@ import { HashRouter, } from "react-router-dom";
 import AppRoutes from "./routes";
 import { ThemeProvider } from "./components/common/theme-provider";
 import { Toaster } from "./components/ui/sonner";
+import { UserProvider } from "./contexts/userContext";
 
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <HashRouter>
-        <Toaster position="top-center" expand={false} richColors />
-        <AppRoutes />
-      </HashRouter>
+      <UserProvider>
+        <HashRouter>
+          <Toaster position="top-center" expand={false} richColors />
+          <AppRoutes />
+        </HashRouter>
+      </UserProvider>
     </ThemeProvider>
 
   )
