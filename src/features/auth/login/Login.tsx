@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useUserContext } from "@/contexts/userContext";
 import axios, { AxiosResponse } from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +16,8 @@ function Login() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loginError, setLoginError] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const { updateUser } = useUserContext();
   
   const navigate = useNavigate();
 
@@ -44,7 +47,7 @@ function Login() {
         );
 
         localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        updateUser(response.data.user);
 
         navigate("/app");
         toast.success("Successfully Logged In!!");
