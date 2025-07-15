@@ -23,7 +23,7 @@ export default function AccountLayout(){
                 <div className="col-span-1 flex flex-col  items-start px-4 gap-18">
                     <div className="flex flex-col w-full gap-4">
                         {items.map((item) => (    
-                            <a href={item.url}>
+                            <a href={item.url} key={item.url}>
                                 <Button className="w-full cursor-pointer"><item.icon />{item.title}</Button>
                             </a>
                         ))}
