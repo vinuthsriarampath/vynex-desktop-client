@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { isAuthenticated } from "@/utils/auth";
+import Loading from "@/pages/loading";
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const [auth, setAuth] = useState<null | boolean>(null);
@@ -23,7 +24,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   }, [location.pathname]);
 
   if (isLoading) {
-    return <div className="flex justify-center items-center">Loading...</div>;
+    return <Loading/>
   }
 
   if (!auth) {
