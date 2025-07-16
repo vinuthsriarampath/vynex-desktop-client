@@ -21,9 +21,9 @@ export default function ProfileHeaderSection() {
     const BASE_URL = import.meta.env.VITE_BASE_URL
     const TOKEN = localStorage.getItem('token') ? localStorage.getItem('token') : toast.error("Token is missing");
 
-    
-    
-    const { user,updateUser } = useUserContext();
+
+
+    const { user, updateUser } = useUserContext();
 
     function uploadImage(file: File) {
         const imgLink = URL.createObjectURL(file);
@@ -70,16 +70,16 @@ export default function ProfileHeaderSection() {
 
         if (error) {
             console.error('Upload error:', error.message);
-            toast.error('Upload failed! : '+error.message,{id:toastId});
+            toast.error('Upload failed! : ' + error.message, { id: toastId });
         } else {
-            const imagePath = SUPABASE_URL+"/storage/v1/object/public/"+data.fullPath
+            const imagePath = SUPABASE_URL + "/storage/v1/object/public/" + data.fullPath
             console.log(imagePath)
             try {
                 const response = await axios.patch(
                     `${BASE_URL}/api/user/update/avatar`,
-                    {avatar:imagePath},
+                    { avatar: imagePath },
                     {
-                        headers:{
+                        headers: {
                             Authorization: `Bearer ${TOKEN}`,
                             Accept: "application/json",
                         }
@@ -100,7 +100,7 @@ export default function ProfileHeaderSection() {
                     toast.error(error instanceof Error ? error.message : "Something went wrong")
                 }
             }
-            setEdit(false);  
+            setEdit(false);
         }
     };
 
@@ -121,7 +121,7 @@ export default function ProfileHeaderSection() {
             {!edit ? (
                 <>
                     <div className="flex items-center gap-4">
-                        <img src={user.avatar ? user.avatar :"https://hebbkx1anhila5yf.public.blob.vercel-storage.com/38184074.jpg-M4vCjTSSWVw5RwWvvmrxXBcNVU8MBU.jpeg"} alt="profile pic" className="rounded-full w-24 h-24 object-cover" />
+                        <img src={user.avatar ? user.avatar : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/38184074.jpg-M4vCjTSSWVw5RwWvvmrxXBcNVU8MBU.jpeg"} alt="profile pic" className="rounded-full w-24 h-24 object-cover" />
                         <div>
                             <p className="font-semibold text-lg">{user.first_name} {user.last_name}</p>
                             <p className="text-gray-400">Trainee Software Developer</p>
@@ -138,9 +138,9 @@ export default function ProfileHeaderSection() {
                             id="image-view"
                             ref={imageViewRef}
                             className="flex flex-col items-center justify-center text-center w-full h-full bg-center bg-cover rounded-full overflow-hidden aspect-square"
-                            style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : {backgroundImage: `url(${user.avatar})`}}
+                            style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : { backgroundImage: `url(${user.avatar})` }}
                         >
-                            {!selectedFile && (
+                            {!selectedFile && !user.avatar &&(
                                 <>
                                     <svg id="upload-icon" xmlns="http://www.w3.org/2000/svg" className="w-11 mb-2 fill-gray-500"
                                         viewBox="0 0 32 32">
