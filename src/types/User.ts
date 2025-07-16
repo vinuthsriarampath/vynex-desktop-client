@@ -10,5 +10,5 @@ export interface User{
     bio? : string 
     createdAt : Date
     updatedAt : Date
-    avatar : string
+    avatar? : string
 }
