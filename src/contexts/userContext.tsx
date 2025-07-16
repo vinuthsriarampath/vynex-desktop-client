@@ -3,10 +3,17 @@ import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const defaultUser: User = {
-    first_name: "",
-    last_name: "",
-    email: "",
+    first_name: "first name",
+    last_name: "last name",
+    email: "example@email.com",
     avatar:"",
+    contact : "000000000",
+    dob : new Date("2004-09-18"),
+    address : "Address",
+    postal_code : 0,
+    bio : "This is Bio" ,
+    createdAt: new Date(),
+    updatedAt: new Date(),
 }
 
 type UserContextType = {
