@@ -18,6 +18,8 @@ export default function ProfilePage() {
     // Personal Information
     const handlePersonalInfoEdit = () => {
         setPersonalInfoEdit(true);
+        handleBioEditCancel();
+        handleLiveInEditCancel();
     }
 
     const handlePersonalInfoEditCancel = () => {
@@ -35,6 +37,8 @@ export default function ProfilePage() {
     // Live On
     const handleLiveInEdit = () => {
         setLiveInEdit(true)
+        handleBioEditCancel();
+        handlePersonalInfoEditCancel();
     }
 
     const handleLiveInEditCancel = () => {
@@ -51,7 +55,9 @@ export default function ProfilePage() {
 
     // Bio 
     const handleBioEdit = () => {
-        setBioEdit(true)
+        setBioEdit(true);
+        handleLiveInEditCancel();
+        handlePersonalInfoEditCancel();
     }
 
     const handleBioEditCancel = () => {
@@ -94,9 +100,9 @@ export default function ProfilePage() {
                         <ProfileInfoItem label="Phone" value={<Input form="personal-info-form" value={user.contact} className="w-full" type="tel" name="phone_number" placeholder="Phone Number" />} />
                         <div className="col-span-full flex gap-2 mt-2 justify-end">
                             <form id="personal-info-form" className="flex gap-2" onSubmit={handlePersonalInfoSubmit}>
-                                <Button variant="outline" type="button" onClick={handlePersonalInfoEditCancel}>Cancel</Button>
-                                <Button type="reset" variant="secondary">Clear</Button>
-                                <Button type="submit">Update</Button>
+                                <Button variant="outline" type="button" className="cursor-pointer" onClick={handlePersonalInfoEditCancel}>Cancel</Button>
+                                <Button type="reset" variant="secondary" className="cursor-pointer">Clear</Button>
+                                <Button type="submit" className="cursor-pointer">Update</Button>
                             </form>
                         </div>
                     </>
@@ -123,18 +129,18 @@ export default function ProfilePage() {
                 </div>
                 {bioEdit ? (
                     <>
-                        <Textarea name="bio" placeholder="Bio" value={user.bio} />
+                        <Textarea name="bio" placeholder="Bio" value={user.bio ? user.bio : "Add Bio here..."} />
                         <div className="col-span-full flex gap-2 mt-2 justify-end">
                             <form id="personal-info-form" className="flex gap-2" onSubmit={handleBioEditSubmit}>
-                                <Button variant="outline" type="button" onClick={handleBioEditCancel}>Cancel</Button>
-                                <Button type="reset" variant="secondary">Clear</Button>
-                                <Button type="submit">Update</Button>
+                                <Button variant="outline" type="button" className="cursor-pointer" onClick={handleBioEditCancel}>Cancel</Button>
+                                <Button type="reset" variant="secondary" className="cursor-pointer">Clear</Button>
+                                <Button type="submit" className="cursor-pointer">Update</Button>
                             </form>
                         </div>
                     </>
                 ) : (
                     <pre className="text-gray-400 whitespace-pre-wrap text-justify">
-                        {user.bio}
+                        {user.bio ? user.bio : "Add Bio here..."}
                     </pre>
                 )}
             </section>
@@ -148,9 +154,9 @@ export default function ProfilePage() {
                         <ProfileInfoItem label="Postal Code" value={<Input name="postal_code" placeholder="Postal Code" value={user.postal_code} />} />
                         <div className="col-span-full flex gap-2 mt-2 justify-end">
                             <form id="personal-info-form" className="flex gap-2" onSubmit={handleLiveInEditSubmit}>
-                                <Button variant="outline" type="button" onClick={handleLiveInEditCancel}>Cancel</Button>
-                                <Button type="reset" variant="secondary">Clear</Button>
-                                <Button type="submit">Update</Button>
+                                <Button variant="outline" type="button" className="cursor-pointer" onClick={handleLiveInEditCancel}>Cancel</Button>
+                                <Button type="reset" variant="secondary" className="cursor-pointer">Clear</Button>
+                                <Button type="submit" className="cursor-pointer">Update</Button>
                             </form>
                         </div>
                     </>
