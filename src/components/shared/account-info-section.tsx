@@ -2,13 +2,13 @@ import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { PenLine } from "lucide-react";
 
-interface ProfileInfoSectionProps {
+interface AccountInfoSectionProps {
   title: string;
   onEdit?: () => void;
   children: ReactNode;
 }
 
-export function ProfileInfoSection({ title, onEdit, children }: ProfileInfoSectionProps) {
+export function AccountInfoSection({ title, onEdit, children }: AccountInfoSectionProps) {
   return (
     <section className="border border-gray-200/20 rounded-md p-4 mx-1 mb-4">
       <div className="flex items-center justify-between mb-4">
