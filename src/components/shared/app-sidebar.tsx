@@ -1,4 +1,4 @@
-import { Settings, LayoutDashboard, FolderGit2 } from "lucide-react"
+import { LayoutDashboard, FolderGit2 } from "lucide-react"
 
 import {
     Sidebar,
@@ -13,8 +13,7 @@ import {
     SidebarRail,
 } from "@/components/ui/sidebar"
 import { NavUser } from "../custom/nav-user"
-import { useEffect, useState } from "react"
-import { User } from "@/types/User"
+import { useUserContext } from "@/contexts/userContext"
 
 const items = [
     {
@@ -27,24 +26,10 @@ const items = [
         url: "/#/app/project",
         icon: FolderGit2,
     },
-    {
-        title: "Settings",
-        url: "#",
-        icon: Settings,
-    },
 ]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const [user, setUser] = useState<User>({
-        email: '',
-        first_name: '',
-        last_name: '',
-        avatar: ''
-    });
-    useEffect(() => {
-        const userData = localStorage.getItem("user");
-        if (userData) setUser(JSON.parse(userData))
-    }, []);
+    const { user } = useUserContext();
 
     return (
         <Sidebar collapsible="icon" {...props}>
