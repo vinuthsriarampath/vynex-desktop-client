@@ -1,15 +1,20 @@
-import { HashRouter, Route, Routes } from "react-router-dom";
-import Landing from "./app/Landing";
-import Dashboard from "./app/dashboard/Dashboard";
+import { HashRouter, } from "react-router-dom";
+import AppRoutes from "./routes";
+import { ThemeProvider } from "./components/common/theme-provider";
+import { Toaster } from "./components/ui/sonner";
+import { UserProvider } from "./contexts/userContext";
 
 function App() {
   return (
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-    </HashRouter>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <UserProvider>
+        <HashRouter>
+          <Toaster position="top-center" expand={false} richColors />
+          <AppRoutes />
+        </HashRouter>
+      </UserProvider>
+    </ThemeProvider>
+
   )
 }
 

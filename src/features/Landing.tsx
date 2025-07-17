@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import AppUpdate from "../components/AppUpdate";
+import AppUpdate from "../components/custom/AppUpdate";
 import Login from "./auth/login/Login";
-import OfflinePage from "../components/OfflinePage";
+import OfflinePage from "../pages/OfflinePage";
+
 
 function Landing() {
     const isDesktop = Boolean(window.ipcRenderer);
+    const isOnline = navigator.onLine;
+
     const [message, setMessage] = useState('');
     const [updateStatus, setUpdateStatus] = useState(false);
-    const isOnline = navigator.onLine;
     const [isDev, setIsDev] = useState(false);
 
     useEffect(() => {
@@ -27,7 +29,6 @@ function Landing() {
 
 
         const handler = (_event: any, msg: string) => {
-            console.log(msg);
             setMessage(msg)
         }
 
@@ -45,7 +46,8 @@ function Landing() {
     }, [isDesktop]);
     return (
         <>
-            <div className="bg-black h-screen text-lime-400 flex justify-center items-center">
+            <div className=" h-screen flex justify-center items-center">
+
                 {
                     isDev ? (
                         <Login />

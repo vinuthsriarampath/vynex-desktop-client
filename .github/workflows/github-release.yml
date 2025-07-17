@@ -31,6 +31,20 @@ jobs:
           $version = node -p "require('./package.json').version"
           echo "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
+      - name: Create .env file
+        run: |
+          echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}" > .env
+          echo "VITE_GITHUB_PAT=${{ secrets.VITE_GITHUB_PAT }}" >> .env
+          echo "VITE_GITHUB_BASE_URL=${{ secrets.VITE_GITHUB_BASE_URL }}" >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
+        env:
+          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+          VITE_GITHUB_PAT: ${{ secrets.VITE_GITHUB_PAT }}
+          VITE_GITHUB_BASE_URL: ${{ secrets.VITE_GITHUB_BASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+
       - name: Build Windows app
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
