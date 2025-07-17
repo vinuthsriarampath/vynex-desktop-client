@@ -131,7 +131,7 @@ process.on("uncaughtException",function (err){
   sendMessage("Error: " + err.message,false);
 });
 
-ipcMain.on('open-link', (event, url) => {
+ipcMain.on('open-link', (_event, url) => {
   shell.openExternal(url); // Open in default browser
   // Or load in a new BrowserWindow:
   // const newWin = new BrowserWindow({ width: 600, height: 400 });
