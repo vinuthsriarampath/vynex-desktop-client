@@ -1,4 +1,5 @@
 import { LayoutDashboard, FolderGit2 } from "lucide-react"
+import { Link } from "react-router-dom"
 
 import {
     Sidebar,
@@ -40,10 +41,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             asChild
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
-                            <a href="/#/app/">
+                            <Link to="/app">
                                 <img src="icon.ico" className="!size-5" />
                                 <span className="text-base font-semibold">Vynex</span>
-                            </a>
+                            </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
@@ -55,10 +56,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             {items.map((item) => (
                                 <SidebarMenuItem key={item.title} className="cursor-pointer">
                                     <SidebarMenuButton asChild>
-                                        <a href={item.url}>
+                                        <Link to={item.url.replace('/#', '')}>
                                             <item.icon />
                                             <span>{item.title}</span>
-                                        </a>
+                                        </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
