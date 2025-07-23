@@ -1,5 +1,5 @@
 import CreateProject from "@/components/app/project/create-project";
-import { projectColumns } from "@/components/app/project/project-columns";
+import { ProjectColumns } from "@/components/app/project/project-columns";
 import { DataTable } from "@/components/common/data-table";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -157,7 +157,7 @@ export default function ProjectPage() {
 
                 </div>
             </div>
-            <DataTable columns={projectColumns} data={projects} />
+            <DataTable columns={ProjectColumns({setProjects})} data={projects} />
         </div>
     );
 }
