@@ -17,6 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Project } from "@/types/Project"
 import { toast } from "sonner"
 import UpdateProject from "./update-project"
+import DeleteProject from "@/components/app/project/delete-project.tsx";
 
 interface ProjectColumnsProps {
     setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
@@ -170,6 +171,7 @@ export const ProjectColumns = ({ setProjects }: ProjectColumnsProps): ColumnDef<
             return (
                 <div className="flex flex-row gap-2">
                     <UpdateProject setProjects={setProjects} project={project} />
+                    <DeleteProject setProjects={setProjects} project={project} />
                     <DropdownMenu>
                         <DropdownMenuTrigger>
                             <Button className="h-8 w-8 p-0 cursor-pointer">
