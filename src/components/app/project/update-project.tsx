@@ -123,8 +123,8 @@ export default function UpdateProject({ setProjects, project }: Readonly<UpdateP
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant={"outline"} className="w-full sm:w-auto cursor-pointer " onClick={()=> {setOpen(true)}}>
-                    <Pencil className="text-yellow-500"/>
+                <Button className="bg-transparent hover:bg-transparent hover:cursor-pointer" variant={"ghost"} onClick={()=> {setOpen(true)}}>
+                    <Pencil className="text-yellow-400 hover:text-yellow-700"/>
                 </Button>
             </DialogTrigger>
             <DialogContent>
@@ -235,7 +235,7 @@ export default function UpdateProject({ setProjects, project }: Readonly<UpdateP
                     </div>
                     <div className="flex justify-end flex-row gap-4">
                         <Button type="reset" variant={"outline"} className="cursor-pointer">Clear</Button>
-                        <Button type="submit" className="cursor-pointer">Submit</Button>
+                        <Button type="submit" className="cursor-pointer">Update</Button>
                     </div>
                 </form>
             </DialogContent>
