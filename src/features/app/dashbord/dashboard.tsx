@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useState} from "react";
 import axios, {AxiosResponse} from "axios";
 import {toast} from "sonner";
 import StatCard from "@/components/app/dashboard/stat-card.tsx";
@@ -54,10 +54,6 @@ export default function Dashboard(){
         };
         getStats();
     }, [BASE_URL, TOKEN]);
-
-    const totalVisitors = useMemo(() => {
-        return chartData.reduce((acc, curr) => acc + curr.value, 0)
-    }, [])
     return (
         <>
             <div className={"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"}>
@@ -81,7 +77,7 @@ export default function Dashboard(){
                                             return (
                                                 <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle" >
                                                     <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-3xl font-bold" >
-                                                        {totalVisitors.toLocaleString()}
+                                                        {totalProjects.toLocaleString()}
                                                     </tspan>
                                                     <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground" >
                                                         Projects
