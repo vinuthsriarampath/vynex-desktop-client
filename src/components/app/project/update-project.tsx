@@ -88,7 +88,7 @@ export default function UpdateProject({ setProjects, project }: Readonly<UpdateP
 
     const updateProjectBackend = ( projectId: number, project_name: string, repo: { id: number; name: string; html_url: string; description: string; language: string; clone_url: string; created_at: string | Date; updated_at: string | Date; }, showCase: boolean, completed: boolean ) => {
         return axios.patch(
-            `${BASE_URL}/api/project/update/${projectId}`,
+            `${BASE_URL}/api/project/update?projectId=${projectId}`,
             {
                 project_name,
                 show_case: showCase,

@@ -56,7 +56,7 @@ export default function DeleteProject({setProjects, project}: Readonly<DeletePro
                 toast.loading("Repository deleted successfully!, deleting from local..", { id: toastId });
 
                 await  axios.delete(
-                    `${BASE_URL}/api/project/delete/${project.id}`,
+                    `${BASE_URL}/api/project/delete?projectId=${project.id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${TOKEN}`,
