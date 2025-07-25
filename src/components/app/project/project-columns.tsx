@@ -16,10 +16,14 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import { Project } from "@/types/Project"
 import { toast } from "sonner"
+import UpdateProject from "./update-project"
+import DeleteProject from "@/components/app/project/delete-project.tsx";
 
+interface ProjectColumnsProps {
+    setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
+}
 
-
-export const projectColumns: ColumnDef<Project>[] = [
+export const ProjectColumns = ({ setProjects }: ProjectColumnsProps): ColumnDef<Project>[] => [
     {
         id: "select",
         header: ({ table }) => (
@@ -137,8 +141,8 @@ export const projectColumns: ColumnDef<Project>[] = [
     //     header: ({ column }) => {
     //         return (
     //             <Button
-    //                 variant="ghost"
-    //                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //             variant="ghost"
+    //             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
     //             >
     //                 Email
     //                 <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -165,44 +169,48 @@ export const projectColumns: ColumnDef<Project>[] = [
             const project = row.original
 
             return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger>
-                        <Button className="h-8 w-8 p-0 cursor-pointer">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="center">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() => {
-                                navigator.clipboard.writeText(project.html_url);
-                                toast.success("Repository url copied to clipboard!")
-                            }}
-                        >
-                            Github repository url
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={() => {
-                                if(Boolean(window.ipcRenderer)){
-                                    window.ipcRenderer.send('open-link', project.html_url);
-                                }
-                                window.open(project.html_url);
-                            }}
-                        >
-                            View on github
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                            onClick={() => {
-                                navigator.clipboard.writeText(project.clone_url);
-                                toast.success("Clone url copied to clipboard!")
-                            }}
-                        >
-                            Github repository url
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex flex-row gap-2">
+                    <UpdateProject setProjects={setProjects} project={project} />
+                    <DeleteProject setProjects={setProjects} project={project} />
+                    <DropdownMenu>
+                        <DropdownMenuTrigger>
+                            <Button className="h-8 w-8 p-0 cursor-pointer">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="center">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    navigator.clipboard.writeText(project.html_url);
+                                    toast.success("Repository url copied to clipboard!")
+                                }}
+                            >
+                                Github repository url
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    if (Boolean(window.ipcRenderer)) {
+                                        window.ipcRenderer.send('open-link', project.html_url);
+                                    }
+                                    window.open(project.html_url);
+                                }}
+                            >
+                                View on github
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    navigator.clipboard.writeText(project.clone_url);
+                                    toast.success("Clone url copied to clipboard!")
+                                }}
+                            >
+                                Github repository url
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             )
         },
     },
