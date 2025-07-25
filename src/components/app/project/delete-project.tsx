@@ -13,6 +13,7 @@ import {Trash} from "lucide-react";
 import {useState} from "react";
 import axios from "axios";
 import {toast} from "sonner";
+import {DeleteFile} from "@/utils/delete-file.ts";
 
 interface DeleteProjectProps {
     setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
@@ -55,6 +56,9 @@ export default function DeleteProject({setProjects, project}: Readonly<DeletePro
                 )
                 toast.loading("Repository deleted successfully!, deleting from local..", { id: toastId });
 
+                if (await DeleteFile("project-thumbnails", project.repo_id.toString())) {
+                    toast.loading("Project thumbnail deleted successfully!", { id: toastId });
+                }
                 await  axios.delete(
                     `${BASE_URL}/api/project/delete?projectId=${project.id}`,
                     {
