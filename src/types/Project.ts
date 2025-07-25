@@ -9,6 +9,7 @@ export interface Project{
     clone_url: string
     show_case?: boolean
     status: 'in-progress' | 'completed'
+    thumbnail?: string
     createdAt: Date
     updatedAt: Date
 }
