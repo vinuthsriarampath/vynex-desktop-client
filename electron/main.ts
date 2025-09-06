@@ -60,6 +60,11 @@ if (!gotTheLock) {
     })
 
     app.whenReady().then(() => {
+        app.setLoginItemSettings({
+            openAtLogin: true,
+            path: process.execPath
+        })
+
         createWindow();
 
         win?.webContents.on('did-finish-load', () => {
