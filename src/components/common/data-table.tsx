@@ -27,21 +27,19 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Button } from "../ui/button"
-import { Input } from "@/components/ui/input"
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Settings2 } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { useIsMobile } from "@/hooks/use-mobile"
+import {Button} from "../ui/button"
+import {Input} from "@/components/ui/input"
+import {ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Settings2} from "lucide-react"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "../ui/select"
+import {useIsMobile} from "@/hooks/use-mobile"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
+    filterColumn: string
 }
 
-export function DataTable<TData, TValue>({
-    columns,
-    data,
-}: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({columns, data, filterColumn,}: Readonly<DataTableProps<TData, TValue>>) {
 
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -59,17 +57,17 @@ export function DataTable<TData, TValue>({
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
-        state: { sorting, columnFilters, columnVisibility, rowSelection },
+        state: {sorting, columnFilters, columnVisibility, rowSelection},
     })
 
     return (
         <div>
             <div className="flex items-center justify-between py-4">
                 <Input
-                    placeholder="Filter Name..."
-                    value={(table.getColumn("project_name")?.getFilterValue() as string) ?? ""}
+                    placeholder={`Filter ${filterColumn}...`}
+                    value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
-                        table.getColumn("project_name")?.setFilterValue(event.target.value)
+                        table.getColumn(filterColumn)?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
                 />
@@ -80,13 +78,13 @@ export function DataTable<TData, TValue>({
                             size="sm"
                             className="ml-auto hidden h-8 lg:flex"
                         >
-                            <Settings2 />
+                            <Settings2/>
                             View
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-[150px]">
                         <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
+                        <DropdownMenuSeparator/>
                         {table
                             .getAllColumns()
                             .filter(
@@ -168,7 +166,7 @@ export function DataTable<TData, TValue>({
                             }}
                         >
                             <SelectTrigger className="h-8 w-[75px]">
-                                <SelectValue placeholder={table.getState().pagination.pageSize} />
+                                <SelectValue placeholder={table.getState().pagination.pageSize}/>
                             </SelectTrigger>
                             <SelectContent side="top">
                                 {[10, 20, 25, 30, 40, 50, 100].map((pageSize) => (
@@ -179,7 +177,7 @@ export function DataTable<TData, TValue>({
                             </SelectContent>
                         </Select>
                     </div>
-                    
+
                     {!useIsMobile && (
                         <div className="flex w-[100px] items-center justify-center text-sm font-medium">
                             Page {table.getState().pagination.pageIndex + 1} of{" "}
@@ -195,7 +193,7 @@ export function DataTable<TData, TValue>({
                             disabled={!table.getCanPreviousPage()}
                         >
                             <span className="sr-only">Go to first page</span>
-                            <ChevronsLeft />
+                            <ChevronsLeft/>
                         </Button>
                         <Button
                             variant="outline"
@@ -205,7 +203,7 @@ export function DataTable<TData, TValue>({
                             disabled={!table.getCanPreviousPage()}
                         >
                             <span className="sr-only">Go to previous page</span>
-                            <ChevronLeft />
+                            <ChevronLeft/>
                         </Button>
                         <Button
                             variant="outline"
@@ -215,7 +213,7 @@ export function DataTable<TData, TValue>({
                             disabled={!table.getCanNextPage()}
                         >
                             <span className="sr-only">Go to next page</span>
-                            <ChevronRight />
+                            <ChevronRight/>
                         </Button>
                         <Button
                             variant="outline"
@@ -225,7 +223,7 @@ export function DataTable<TData, TValue>({
                             disabled={!table.getCanNextPage()}
                         >
                             <span className="sr-only">Go to last page</span>
-                            <ChevronsRight />
+                            <ChevronsRight/>
                         </Button>
                     </div>
                 </div>
