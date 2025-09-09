@@ -157,7 +157,7 @@ export default function ProjectPage() {
 
                 </div>
             </div>
-            <DataTable columns={ProjectColumns({setProjects})} data={projects} />
+            <DataTable columns={ProjectColumns({setProjects})} data={projects} filterColumn={"project_name"} />
         </div>
     );
 }
