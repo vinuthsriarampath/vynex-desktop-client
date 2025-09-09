@@ -5,39 +5,41 @@ import ProjectPage from "@/features/app/project/project";
 import Landing from "@/features/Landing";
 import MainLayout from "@/layouts/main-layout";
 import NotFound from "@/pages/not-found";
-import { useRoutes } from "react-router-dom";
+import {useRoutes} from "react-router-dom";
 import SecurityPage from "@/features/app/account/security/security-page";
 import AccountLayout from "@/layouts/account-layout";
+import SocialAccounts from "@/features/app/social_accounts/socialAccounts.tsx";
 
 export default function AppRoutes() {
-  return useRoutes([
-    {
-      path: "/",
-      element: <Landing/>
-    },
-    {
-      path: "/app",
-      element: (
-        <ProtectedRoute>
-          <MainLayout />
-        </ProtectedRoute>
-      ),
-      children: [
-        { index: true, element: <Dashboard/> },
-        { path: "project", element: <ProjectPage/> },
-        { 
-          path: "account", 
-          element: <AccountLayout/>, 
-          children: [
-            {index:true, element:<ProfilePage/>},
-            {path:"security", element:<SecurityPage/>}
-          ]
+    return useRoutes([
+        {
+            path: "/",
+            element: <Landing/>
         },
-      ],
-    },
-    {
-      path: "*",
-      element: <NotFound />,
-    },
-  ]);
+        {
+            path: "/app",
+            element: (
+                <ProtectedRoute>
+                    <MainLayout/>
+                </ProtectedRoute>
+            ),
+            children: [
+                {index: true, element: <Dashboard/>},
+                {path: "project", element: <ProjectPage/>},
+                {path: "social-accounts", element: <SocialAccounts/>},
+                {
+                    path: "account",
+                    element: <AccountLayout/>,
+                    children: [
+                        {index: true, element: <ProfilePage/>},
+                        {path: "security", element: <SecurityPage/>}
+                    ]
+                },
+            ],
+        },
+        {
+            path: "*",
+            element: <NotFound/>,
+        },
+    ]);
 }
