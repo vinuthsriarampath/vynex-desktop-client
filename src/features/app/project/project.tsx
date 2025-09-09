@@ -11,6 +11,7 @@ import { toast } from "sonner";
 
 export default function ProjectPage() {
     const [projects, setProjects] = useState<Project[]>([]);
+    const [loading,setLoading] = useState<boolean>(false);
 
 
     const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
@@ -23,6 +24,7 @@ export default function ProjectPage() {
     }, [])
 
     const fetchProjects = async () => {
+        setLoading(true);
         try {
             const response: AxiosResponse<Project[]> = await axios.get(
                 `${BASE_URL}/api/project/read/all`,
@@ -40,6 +42,8 @@ export default function ProjectPage() {
             } else {
                 toast.error(error instanceof Error ? error.message : "Something went wrong!");
             }
+        }finally {
+            setLoading(false);
         }
     }
 
@@ -157,7 +161,7 @@ export default function ProjectPage() {
 
                 </div>
             </div>
-            <DataTable columns={ProjectColumns({setProjects})} data={projects} filterColumn={"project_name"} />
+            <DataTable columns={ProjectColumns({setProjects})} data={projects} filterColumn={"project_name"} loading={loading} />
         </div>
     );
 }

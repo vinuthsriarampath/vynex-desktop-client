@@ -11,6 +11,7 @@ import CreateSocialAccount from "@/components/app/social-accounts/create-social-
 export default function SocialAccounts() {
 
     const [socials,setSocials] = useState<Social[]>([]);
+    const [loading,setLoading] = useState<boolean>(false);
 
     const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
     const TOKEN = localStorage.getItem('token') ? localStorage.getItem('token') : toast.error("Token is missing");
@@ -21,6 +22,7 @@ export default function SocialAccounts() {
     },[]);
 
     const fetchSocialAccounts = async () => {
+        setLoading(true);
         try {
             const response = await axios.get(
                 `${BASE_URL}/api/social/read/all`,
@@ -37,6 +39,8 @@ export default function SocialAccounts() {
             } else {
                 toast.error(error instanceof Error ? error.message : "Something went wrong!");
             }
+        }finally {
+            setLoading(false);
         }
     }
     return (
@@ -52,7 +56,7 @@ export default function SocialAccounts() {
                     </TooltipContent>
                 </Tooltip>
             </div>
-            <DataTable columns={SocialAccountsColumns({setSocials})} data={socials} filterColumn={"username"}/>
+            <DataTable columns={SocialAccountsColumns({setSocials})} data={socials} filterColumn={"username"} loading={loading}/>
         </div>
     )
 }

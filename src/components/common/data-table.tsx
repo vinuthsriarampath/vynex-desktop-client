@@ -37,9 +37,10 @@ interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
     filterColumn: string
+    loading?: boolean
 }
 
-export function DataTable<TData, TValue>({columns, data, filterColumn,}: Readonly<DataTableProps<TData, TValue>>) {
+export function DataTable<TData, TValue>({columns, data, filterColumn,loading}: Readonly<DataTableProps<TData, TValue>>) {
 
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -127,26 +128,40 @@ export function DataTable<TData, TValue>({columns, data, filterColumn,}: Readonl
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {(() => {
+                            if (table.getRowModel().rows?.length) {
+                                return table.getRowModel().rows.map((row) => (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && "selected"}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ));
+                            }
+
+                            if (loading) {
+                                return (
+                                    <TableRow>
+                                        <TableCell colSpan={columns.length} className="h-24 text-center">
+                                            Loading...
                                         </TableCell>
-                                    ))}
+                                    </TableRow>
+                                );
+                            }
+
+                            return (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                                        No results.
+                                    </TableCell>
                                 </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
+                            );
+                        })()}
                     </TableBody>
                 </Table>
             </div>
