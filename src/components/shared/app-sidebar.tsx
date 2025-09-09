@@ -1,4 +1,4 @@
-import { LayoutDashboard, FolderGit2 } from "lucide-react"
+import {LayoutDashboard, FolderGit2, Handshake} from "lucide-react"
 import { Link } from "react-router-dom"
 
 import {
@@ -27,6 +27,11 @@ const items = [
         url: "/#/app/project",
         icon: FolderGit2,
     },
+    {
+        title: "Social Accounts",
+        url: "/#/app/social-accounts",
+        icon: Handshake,
+    }
 ]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
