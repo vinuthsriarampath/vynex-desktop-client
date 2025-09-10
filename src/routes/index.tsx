@@ -9,6 +9,7 @@ import {useRoutes} from "react-router-dom";
 import SecurityPage from "@/features/app/account/security/security-page";
 import AccountLayout from "@/layouts/account-layout";
 import SocialAccounts from "@/features/app/social_accounts/socialAccounts.tsx";
+import Feedback from "@/features/app/feedback/feedback.tsx";
 
 export default function AppRoutes() {
     return useRoutes([
@@ -27,6 +28,7 @@ export default function AppRoutes() {
                 {index: true, element: <Dashboard/>},
                 {path: "project", element: <ProjectPage/>},
                 {path: "social-accounts", element: <SocialAccounts/>},
+                {path: "feedback",element: <Feedback/>},
                 {
                     path: "account",
                     element: <AccountLayout/>,
