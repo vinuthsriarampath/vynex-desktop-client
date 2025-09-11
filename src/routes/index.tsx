@@ -10,6 +10,7 @@ import SecurityPage from "@/features/app/account/security/security-page";
 import AccountLayout from "@/layouts/account-layout";
 import SocialAccounts from "@/features/app/social_accounts/socialAccounts.tsx";
 import Feedback from "@/features/app/feedback/feedback.tsx";
+import CreateIssue from "@/components/app/feedback/create-issue.tsx";
 
 export default function AppRoutes() {
     return useRoutes([
@@ -28,7 +29,13 @@ export default function AppRoutes() {
                 {index: true, element: <Dashboard/>},
                 {path: "project", element: <ProjectPage/>},
                 {path: "social-accounts", element: <SocialAccounts/>},
-                {path: "feedback",element: <Feedback/>},
+                {
+                    path: "feedback",
+                    children: [
+                        {index: true, element: <Feedback/>},
+                        {path: "create",element: <CreateIssue/>}
+                    ]
+                },
                 {
                     path: "account",
                     element: <AccountLayout/>,
