@@ -44,7 +44,7 @@ function createWindow() {
     })
 
     win.on('close', (event) => {
-        if (isQuiting) {
+        if (!isQuiting) {
             event.preventDefault();
             win?.hide();
             lastAccessTime = Date.now();
