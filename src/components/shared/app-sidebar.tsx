@@ -1,4 +1,4 @@
-import { LayoutDashboard, FolderGit2 } from "lucide-react"
+import {LayoutDashboard, FolderGit2, Handshake, MessageCircleWarning} from "lucide-react"
 import { Link } from "react-router-dom"
 
 import {
@@ -27,6 +27,19 @@ const items = [
         url: "/#/app/project",
         icon: FolderGit2,
     },
+    {
+        title: "Social Accounts",
+        url: "/#/app/social-accounts",
+        icon: Handshake,
+    }
+]
+
+const bottomItems = [
+    {
+        title: "Report Feedbacks",
+        url: "/#/app/feedback",
+        icon: MessageCircleWarning,
+    },
 ]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -49,11 +62,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-            <SidebarContent>
+            <SidebarContent className={"flex flex-col justify-between"}>
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map((item) => (
+                                <SidebarMenuItem key={item.title} className="cursor-pointer">
+                                    <SidebarMenuButton asChild>
+                                        <Link to={item.url.replace('/#', '')}>
+                                            <item.icon />
+                                            <span>{item.title}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+                <SidebarGroup>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {bottomItems.map((item) => (
                                 <SidebarMenuItem key={item.title} className="cursor-pointer">
                                     <SidebarMenuButton asChild>
                                         <Link to={item.url.replace('/#', '')}>

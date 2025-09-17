@@ -1,16 +1,17 @@
 import CreateProject from "@/components/app/project/create-project";
-import { ProjectColumns } from "@/components/app/project/project-columns";
-import { DataTable } from "@/components/common/data-table";
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Project } from "@/types/Project";
-import { Label } from "@radix-ui/react-dropdown-menu";
-import axios, { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import {ProjectColumns} from "@/components/app/project/project-columns";
+import {DataTable} from "@/components/common/data-table";
+import {Button} from "@/components/ui/button";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
+import {Project} from "@/types/Project";
+import {Label} from "@radix-ui/react-dropdown-menu";
+import axios, {AxiosResponse} from "axios";
+import {useEffect, useState} from "react";
+import {toast} from "sonner";
 
 export default function ProjectPage() {
     const [projects, setProjects] = useState<Project[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
 
 
     const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
@@ -23,6 +24,7 @@ export default function ProjectPage() {
     }, [])
 
     const fetchProjects = async () => {
+        setLoading(true);
         try {
             const response: AxiosResponse<Project[]> = await axios.get(
                 `${BASE_URL}/api/project/read/all`,
@@ -40,6 +42,8 @@ export default function ProjectPage() {
             } else {
                 toast.error(error instanceof Error ? error.message : "Something went wrong!");
             }
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -47,7 +51,6 @@ export default function ProjectPage() {
     async function handleSync() {
         const toastId = toast.loading("Fetching repositories from GitHub...");
         try {
-
 
 
             let page = 1;
@@ -73,14 +76,14 @@ export default function ProjectPage() {
                     page++;
                 } catch (error) {
                     if (axios.isAxiosError(error)) {
-                        toast.error(error.response?.data.error, { id: toastId });
+                        toast.error(error.response?.data.error, {id: toastId});
                     } else {
-                        toast.error(error instanceof Error ? error.message : "Something went wrong when fetching from github!", { id: toastId });
+                        toast.error(error instanceof Error ? error.message : "Something went wrong when fetching from github!", {id: toastId});
                     }
                 }
             }
 
-            toast.loading("Syncing to database!", { id: toastId });
+            toast.loading("Syncing to database!", {id: toastId});
 
             const mappedProjects: Project[] = allRepos.map((repo) => ({
                 repo_id: repo.id,
@@ -96,14 +99,32 @@ export default function ProjectPage() {
             }));
 
             const newProjects = mappedProjects.filter((mappedProject) =>
-                !projects.some((existingProject) => existingProject.repo_id === mappedProject.repo_id)
+                !projects.some((existingProject) => existingProject.repo_id === mappedProject.repo_id) ||
+                projects.some((existingProject) =>
+                    existingProject.repo_id === mappedProject.repo_id &&
+                    (
+                        existingProject.repo_name !== mappedProject.repo_name ||
+                        existingProject.html_url !== mappedProject.html_url ||
+                        existingProject.description !== mappedProject.description ||
+                        existingProject.language !== mappedProject.language ||
+                        existingProject.clone_url !== mappedProject.clone_url ||
+                        new Date(existingProject.createdAt).getTime() !== new Date(mappedProject.createdAt).getTime() ||
+                        new Date(existingProject.updatedAt).getTime() !== new Date(mappedProject.updatedAt).getTime()
+                    )
+                )
             );
 
+            const deletedProjects = projects.filter((project) =>
+                !mappedProjects.some((mappedProject) => mappedProject.repo_id === project.repo_id)
+            );
 
             try {
                 const response = await axios.post(
                     `${BASE_URL}/api/project/sync`,
-                    JSON.stringify(newProjects),
+                    JSON.stringify({
+                        newProjects,
+                        deletedProjectIds: deletedProjects.map((p) => p.repo_id),
+                    }),
                     {
                         headers: {
                             Authorization: `Bearer ${TOKEN}`,
@@ -112,18 +133,35 @@ export default function ProjectPage() {
                     }
                 );
 
-                setProjects(prev => [...prev, ...response.data.newRepos])
-                toast.success("Sync Successful !", { id: toastId })
+                setProjects(prev => {
+                    let updatedProjects = [...prev];
+
+                    response.data.newRepos.forEach((newRepo: Project) => {
+                        const index = updatedProjects.findIndex(p => p.repo_id === newRepo.repo_id);
+                        if (index !== -1) {
+                            updatedProjects[index] = newRepo;
+                        } else {
+                            updatedProjects.push(newRepo);
+                        }
+                    });
+
+                    response.data.deletedProjectIds.forEach((id: number) => {
+                        updatedProjects = updatedProjects.filter(p => p.repo_id !== id);
+                    });
+
+                    return updatedProjects;
+                });
+                toast.success("Sync Successful !", {id: toastId})
             } catch (error) {
                 if (axios.isAxiosError(error)) {
-                    toast.error(error.response?.data.error, { id: toastId });
+                    toast.error(error.response?.data.error, {id: toastId});
                 } else {
-                    toast.error(error instanceof Error ? error.message : "Something went wrong wen syncing!", { id: toastId });
+                    toast.error(error instanceof Error ? error.message : "Something went wrong wen syncing!", {id: toastId});
                 }
             }
 
         } catch (error) {
-            toast.error("Something went wrong!", { id: toastId });
+            toast.error("Something went wrong!", {id: toastId});
         }
     }
 
@@ -136,14 +174,14 @@ export default function ProjectPage() {
                         New Project
                     </Button> */}
                     <Tooltip>
-                    <TooltipTrigger>
-    <CreateProject setProjects={setProjects} />
-                        
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white ">
-                        Create a project from here and this will create a github repository 
-                    </TooltipContent>
-                </Tooltip>
+                        <TooltipTrigger>
+                            <CreateProject setProjects={setProjects}/>
+
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-white ">
+                            Create a project from here and this will create a github repository
+                        </TooltipContent>
+                    </Tooltip>
                     <Tooltip>
                         <TooltipTrigger>
                             <Button className="w-full sm:w-auto cursor-pointer" onClick={handleSync}>
@@ -157,7 +195,8 @@ export default function ProjectPage() {
 
                 </div>
             </div>
-            <DataTable columns={ProjectColumns({setProjects})} data={projects} />
+            <DataTable columns={ProjectColumns({setProjects})} data={projects} filterColumn={"project_name"}
+                       loading={loading}/>
         </div>
     );
 }

@@ -191,10 +191,9 @@ export const ProjectColumns = ({ setProjects }: ProjectColumnsProps): ColumnDef<
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => {
-                                    if (Boolean(window.ipcRenderer)) {
+                                    if (window.ipcRenderer) {
                                         window.ipcRenderer.send('open-link', project.html_url);
                                     }
-                                    window.open(project.html_url);
                                 }}
                             >
                                 View on github
@@ -206,7 +205,7 @@ export const ProjectColumns = ({ setProjects }: ProjectColumnsProps): ColumnDef<
                                     toast.success("Clone url copied to clipboard!")
                                 }}
                             >
-                                Github repository url
+                                Github clone url
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
