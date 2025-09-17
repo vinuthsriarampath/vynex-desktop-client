@@ -35,6 +35,7 @@ jobs:
         run: |
           echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}" > .env
           echo "VITE_GITHUB_PAT=${{ secrets.VITE_GITHUB_PAT }}" >> .env
+          echo "VITE_GITHUB_REPO=${{ secrets.VITE_GITHUB_REPO }}" >> .env
           echo "VITE_GITHUB_BASE_URL=${{ secrets.VITE_GITHUB_BASE_URL }}" >> .env
           echo "VITE_GITHUB_USERNAME=${{ secrets.VITE_GITHUB_USERNAME }}" >> .env
           echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
@@ -42,6 +43,7 @@ jobs:
         env:
           VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
           VITE_GITHUB_PAT: ${{ secrets.VITE_GITHUB_PAT }}
+          VITE_GITHUB_REPO: ${{ secrets.VITE_GITHUB_REPO }}
           VITE_GITHUB_BASE_URL: ${{ secrets.VITE_GITHUB_BASE_URL }}
           VITE_GITHUB_USERNAME: ${{ secrets.VITE_GITHUB_USERNAME }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
